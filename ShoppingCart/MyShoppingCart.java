@@ -1,6 +1,6 @@
 package homework.ShoppingCart;
 import java.util.*;
-
+import java.io.*;
 class Product {
     private String key;
     private String name;
@@ -127,14 +127,49 @@ public class MyShoppingCart {
         }
     }
 
+    public static HashSet<Product> loadProductsFromCSV(String filename) {
+        HashSet<Product> products = new HashSet<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filename));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length != 0) {
+                    String key = data[0].trim();
+                    String name = data[1].trim();
+                    double price = Double.parseDouble(data[2].trim());
+                    Product product = new Product(key, name, price);
+                    products.add(product);
+                } else {
+                    System.out.println("종료");
+                    break;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        printProductList(products);
+
+        return products;
+    }
+
+    public static void printProductList(HashSet<Product> productList) {
+        System.out.println("상품 목록:");
+        for (Product product : productList) {
+            System.out.println("Key: " + product.getKey() + ", 이름: " + product.getName() + ", 가격: " + product.getPrice());
+        }
+    }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        HashSet<Product> productList = new HashSet<>();
+        //HashSet<Product> productList = new HashSet<>();
+        HashSet<Product> productList = loadProductsFromCSV("C:\\Users\\jhc68\\Desktop\\java_test\\java1\\src\\homework\\ShoppingCart\\products.csv");
         ShoppingCart cart = new ShoppingCart();
 
         // 상품 목록 구성
-        while (true) {
+        /*while (true) {
             System.out.println("상품의 Key, 이름, 가격을 입력하세요 (종료하려면 'exit' 입력): ");
             String key = scanner.next();
             if (key.equals("exit")) break;
@@ -146,7 +181,7 @@ public class MyShoppingCart {
                 System.out.printf("key : %s, 이름 : %s, 가격 : %.0f %n", products.getKey(), products.getName(), products.getPrice());
                 // Product 클래스에 적절한 toString() 메서드가 구현되어 있다면 해당 메서드가 호출됩니다.
             }
-        }
+        }*/
         label:
         while (true) {
             System.out.println("원하는 동작을 입력하세요. (종료하려면 'exit' 입력): ");
